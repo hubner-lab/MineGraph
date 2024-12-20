@@ -1,8 +1,9 @@
 
-# MineGraph: Plant Plastid-Mitochondria Pangenome-Graph Analysis Tool
+# MineGraph: Plastid and mitochondrial graph-pangenome analysis toolkit
 
 **Overview**  
-MineGraph is a streamlined bioinformatics tool designed to generate, analyze, and visualize pangenome graphs specifically for plant plastid and mitochondria genomes. It simplifies the complex processes of graph creation and statistical analysis, offering a comprehensive solution for comparative genomics and variation detection across sequences.
+MineGraph is a computational pipeline designed to construct, analyze, and visualize graph-pangenomes of small genomes such as plastids and mitochondrial genomes. MineGraph include a full implementation of graph-pangenome construction and analysis and include automatic optimization process for key parfamters, graph construction, analysis, and visualization, thus offering a comprehensive solution for comparative genomics and variat calling. MineGraph was also optimized for speed and can handle hundreds of genomes efficiently with a single command. 
+MineGraph is operated within a Docker contained environment, thus eliminating complex installation steps. 
 
 ### Key Terminology
 
@@ -12,10 +13,7 @@ MineGraph is a streamlined bioinformatics tool designed to generate, analyze, an
 - **PGGB (PanGenome Graph Builder)**: A tool used to build pangenome graphs from sequence data.
 - **PanSN-spec**: A naming convention for labeling sequences in a pangenome, retaining this information across formats.
 - **GFA (Graphical Fragment Assembly) Format**: A format used to represent sequence graphs.
-
-### Description
-
-MineGraph is a user-friendly bioinformatics tool designed to automate the workflow of pangenome graph analysis. With Docker support, it operates in a contained environment, eliminating complex installation steps. MineGraph takes an input set of sequences and performs a detailed pre-analysis to optimize parameters, minimizing manual intervention and ensuring that the resulting pangenome graph is accurate and informative.
+  
 
 ### Key Functionalities and Advantages
 
