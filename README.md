@@ -43,7 +43,6 @@ MineGraph is operated within a Docker contained environment, thus eliminating co
 
 ### System Requirements
 
-- **10 GB free disk space**
 - **Docker installed**
 - **Python installed with pandas package**
 
