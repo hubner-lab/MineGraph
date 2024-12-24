@@ -70,9 +70,9 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
     # Determine selected files based on metadata or process all files in data_dir
     if metadata:
         if metadata.endswith(".csv"):
-            fasta_files_df = pd.read_csv(metadata)
+            fasta_files_df = pd.read_csv(metadata, header=None)
         elif metadata.endswith(".xlsx"):
-            fasta_files_df = pd.read_excel(metadata)
+            fasta_files_df = pd.read_excel(metadata, header=None)
         else:
             print("[ERROR] Unsupported file format. Please use CSV or XLSX.")
             sys.exit(1)
