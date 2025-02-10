@@ -49,7 +49,7 @@ def print_help():
     """)
 
 
-def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, tree_bs=10, quantile=0.25, top_n=50):
+def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, tree_bs=10, quantile=0.25, top_n=50, sq_view=False,w_size=1000):
     """
     Run the full workflow with Docker, starting from the given directory.
     Accepts either a file list or all files in data_dir if no file is provided.
@@ -59,6 +59,9 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         output_dir (str): Directory where results will be saved.
         metadata (str, optional): CSV or XLSX file with list of FASTA files to process.
         threads (int): Number of threads to use for PGGB and other parallel tasks.
+        :param w_size:
+        :param sq_view:
+        :param top_n:
         :param threads:
         :param metadata:
         :param output_dir:
@@ -68,7 +71,7 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         :param tree_pars: an argument used to be passed for Raxmel parsimonious trees --tree
     """
     try:
-        
+
         os.makedirs(output_dir, exist_ok=True)
 
         # Determine selected files based on metadata or process all files in data_dir
@@ -125,7 +128,7 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         ]
         subprocess.run(pggb_command, check=True)
         print("[INFO] PGGB alignment and graph generation completed.")
-        
+
         # Step 5: Run run_stats.py inside Docker for statistical analysis
         print("[STEP 5/5] Performing statistical analysis on generated graph and alignments...")
         stats_command = [
@@ -139,10 +142,20 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
             "--input_dir", "/data/pggb_output",
             "--output_dir", "/data/MineGraph_output",
             "--quantile", "{}".format(quantile),
-            "--top_n", "{}".format(top_n)
-
+            "--top_n", "{}".format(top_n),
+            "--window_size", "{}".format(w_size)
         ]
         subprocess.run(stats_command, check=True)
+        if sq_view:
+            stp_command = [
+                "docker", "run", "-it", "--rm",
+                "-v", f"{os.path.abspath(output_dir)}/MineGraph_output/:/data",
+                "-p", "3210:3000",
+                "rakanhaib/sequencetubemap:latest",
+                "bash", "-c",
+                "./scripts/prepare_vg.sh /data/gfa_to_vg.vg && npm start serve"
+            ]
+            subprocess.run(stp_command, check=True)
         print("[INFO] Statistical analysis completed.")
 
         print(
@@ -167,6 +180,8 @@ if __name__ == "__main__":
     parser.add_argument("--quantile", type=int, default=50, help="Consensus nodes percentage of presence,"
                                                                  " 100 means the nodes appeared in 100% of the paths, default is 50")
     parser.add_argument("--top_n", type=int, default="1000", help="top N nodes sizes to be visualized, default is 1000")
+    parser.add_argument("--view", action="store_true", help="If --view is provided, SequenceTubeMap will be launched")
+    parser.add_argument("--window_size", type=int, default=100, help="sliding window size (default: 100)")
 
     args = parser.parse_args()
 
@@ -178,5 +193,8 @@ if __name__ == "__main__":
         tree_pars=args.tree_pars,
         tree_bs=args.tree_bs,
         quantile=args.quantile/100,
-        top_n=args.top_n
+        top_n=args.top_n,
+        sq_view=args.view,
+        w_size=args.window_size
+
     )
