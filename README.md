@@ -64,6 +64,9 @@ Place the FASTA files in a folder (e.g., `./my_data/`) in the current directory,
 ```bash
 python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadata <csv_file>
 ```
+if --view parameter is passed you should be able to access SequenceTubeMap api using http://localhost:3210/
+the graph should be present on a custom track named "gfa_to_vg.vg.xg"
+see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 
 ## Arguments
 
@@ -86,9 +89,6 @@ python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadat
   python MineGraph.py --data_dir ./input_fasta/ --output_dir ./results/ --metadata metadata.csv --threads 32 --tree_pars 20 --tree_bs 50 --quantile 75 --top_n 500
    
   ```
-  if --view parameter is passed you should be able to access SequenceTubeMap api using http://localhost:3210/
-  the graph should be present on a custom track named "gfa_to_vg.vg.xg", 
-  see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 
 The final output will be organized in the following folders:
 - `/path/to/your/data/MineGraph_output`: Contains the pipeline’s final output files.
