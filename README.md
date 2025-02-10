@@ -71,12 +71,14 @@ python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadat
 |----------------|----------|-----------|------------------------------------------------------------------------------------------------------|
 | `--data_dir`   | Yes      |           | Directory containing the input FASTA files to be processed.                                          |
 | `--output_dir` | Yes      |           | Directory where the output files (e.g., MSA, trees, visualizations) will be saved.                   |
-| `--metadata`   | Yes      |           | Metadata file (in CSV or XLSX format) listing the FASTA files to be processed.                      |
-| `--threads`    | No       | 16        | Number of threads to use for parallel processing.                                                   |
-| `--tree_pars`  | No       | 10        | Number of parsimonious trees to generate.                                                           |
-| `--tree_bs`    | No       | 10        | Number of bootstrap trees to generate for assessing phylogenetic tree confidence.                   |
-| `--quantile`   | No       | 50        | Consensus nodes percentage of presence. For example, `100` means nodes must appear in all paths.    |
-| `--top_n`      | No       | 1000      | The top `N` node sizes to visualize in the output, sorted by size.                                  |
+| `--metadata`   | Yes      |           | Metadata file (in CSV or XLSX format) listing the FASTA files to be processed.                       |
+| `--threads`    | No       | 16        | Number of threads to use for parallel processing.                                                    |
+| `--tree_pars`  | No       | 10        | Number of parsimonious trees to generate.                                                            |
+| `--tree_bs`    | No       | 10        | Number of bootstrap trees to generate for assessing phylogenetic tree confidence.                    |
+| `--quantile`   | No       | 50        | Consensus nodes percentage of presence. For example, `100` means nodes must appear in all paths.     |
+| `--top_n`      | No       | 1000      | The top `N` node sizes to visualize in the output, sorted by size.                                   |
+| `--window_size`| No       | 1000      | The sliding window size for similarity plot.                                                         |
+| `--view`       | No       | False     | An argument to run SequenceTubeMap pipeline for visualizing the output graph                         |
 
 
 - **Examples:**
