@@ -66,6 +66,7 @@ python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadat
 ```
 if --view parameter is passed you should be able to access SequenceTubeMap api using http://localhost:3210/
 the graph should be present on a custom track named "gfa_to_vg.vg.xg"
+![](https://github.com/hubner-lab/MineGraph/blob/main/examples/stm.gif)
 see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 
 ## Arguments
