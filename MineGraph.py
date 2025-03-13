@@ -93,7 +93,6 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         else:
             fasta_files = [f for f in os.listdir(data_dir) if f.endswith(".fasta")]
             print(f"[INFO] Processing all FASTA files in {data_dir}.")
-        """
         # Step 1: Prepare FASTA input
         prepare_command = [
                               "docker", "run", "--rm", "-v", f"{os.path.abspath(data_dir)}:/data",
@@ -128,7 +127,6 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         ]
         subprocess.run(pggb_command, check=True)
         print("[INFO] PGGB alignment and graph generation completed.")
-        """
         # Step 5: Run run_stats.py inside Docker for statistical analysis
         print("[STEP 5/5] Performing statistical analysis on generated graph and alignments...")
         stats_command = [
