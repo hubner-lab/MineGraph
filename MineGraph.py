@@ -93,7 +93,7 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         else:
             fasta_files = [f for f in os.listdir(data_dir) if f.endswith(".fasta")]
             print(f"[INFO] Processing all FASTA files in {data_dir}.")
-
+        """
         # Step 1: Prepare FASTA input
         prepare_command = [
                               "docker", "run", "--rm", "-v", f"{os.path.abspath(data_dir)}:/data",
@@ -128,7 +128,7 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         ]
         subprocess.run(pggb_command, check=True)
         print("[INFO] PGGB alignment and graph generation completed.")
-
+        """
         # Step 5: Run run_stats.py inside Docker for statistical analysis
         print("[STEP 5/5] Performing statistical analysis on generated graph and alignments...")
         stats_command = [
@@ -168,20 +168,27 @@ def run_workflow(data_dir, output_dir, metadata=None, threads=16, tree_pars=10, 
         sys.exit(e.returncode)
 
 
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run MineGraph Workflow")
-    parser.add_argument("--data_dir", required=True, help="Directory containing input FASTA files")
-    parser.add_argument("--output_dir", required=True, help="Directory for saving outputs")
-    parser.add_argument("--metadata", required=True, help="File listing FASTA files to process (CSV/XLSX)")
-    parser.add_argument("--threads", type=int, default=16, help="Number of threads (default: 16)")
-    parser.add_argument("--tree_pars", type=int, default=10, help="Number of parsimonious trees (default: 10)")
-    parser.add_argument("--tree_bs", type=int, default=10, help="Number of bootstrap trees (default: 10)")
-    parser.add_argument("--quantile", type=int, default=50, help="Consensus nodes percentage of presence,"
-                                                                 " 100 means the nodes appeared in 100% of the paths, default is 50")
-    parser.add_argument("--top_n", type=int, default="1000", help="top N nodes sizes to be visualized, default is 1000")
-    parser.add_argument("--view", action="store_true", help="If --view is provided, SequenceTubeMap will be launched")
-    parser.add_argument("--window_size", type=int, default=100, help="sliding window size (default: 100)")
+    parser = argparse.ArgumentParser(
+        description="Run MineGraph Workflow: Process input FASTA files and visualize sequence graphs."
+    )
+
+    parser.add_argument("--data_dir", required=True, help="Directory containing input FASTA files.")
+    parser.add_argument("--output_dir", required=True, help="Directory for saving outputs.")
+    parser.add_argument("--metadata", required=True, help="File listing FASTA files to process (CSV/XLSX).")
+    parser.add_argument("--threads", type=int, default=16, help="Number of threads to use (default: 16).")
+    parser.add_argument("--tree_pars", type=int, default=10,
+                        help="Number of parsimonious trees to generate (default: 10).")
+    parser.add_argument("--tree_bs", type=int, default=10, help="Number of bootstrap trees (default: 10).")
+    parser.add_argument("--quantile", type=int, default=50,
+                        help="Consensus nodes percentage of presence. "
+                             "100 means the nodes appeared in all paths (default: 50).")
+    parser.add_argument("--top_n", type=int, default=1000,
+                        help="Number of top nodes by size to visualize (default: 1000).")
+    parser.add_argument("--view", action="store_true",
+                        help="Launch SequenceTubeMap if this flag is provided.")
+    parser.add_argument("--window_size", type=int, default=100,
+                        help="Sliding window size for analysis (default: 100).")
 
     args = parser.parse_args()
 
@@ -192,9 +199,8 @@ if __name__ == "__main__":
         threads=args.threads,
         tree_pars=args.tree_pars,
         tree_bs=args.tree_bs,
-        quantile=args.quantile/100,
+        quantile=args.quantile / 100,
         top_n=args.top_n,
         sq_view=args.view,
         w_size=args.window_size
-
     )
