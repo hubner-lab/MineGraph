@@ -82,13 +82,22 @@ see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 | `--quantile`   | No       | 50        | Consensus nodes percentage of presence. For example, `100` means nodes must appear in all paths.     |
 | `--top_n`      | No       | 1000      | The top `N` node sizes to visualize in the output, sorted by size.                                   |
 | `--window_size`| No       | 1000      | The sliding window size for similarity plot.                                                         |
-| `--view`       | No       | False     | An argument to run SequenceTubeMap pipeline for visualizing the output graph                         |
+| `--view`       | No       | False     | Runs SequenceTubeMap pipeline for visualizing the output graph.                                      |
+| `--mode`       | No       | `all`     | Specifies which steps of the workflow to run. Options: `all` (full workflow), `extract-tr` (only extract tandem repeats), `construct-graph` (build the graph but skip statistics). |
+| `--phyl-tree`  | No       | False     | Enables multiple sequence alignment (MSA) and phylogenetic tree generation.                         |
+| `--plots`      | No       | False     | Enables plotting of statistical graphs during analysis.                                              |
+| `--only-stats` | No       | True      | Runs only the statistical analysis step, generating XLSX files while skipping MSA, tree, and plots.  |
+
+---
+
 
 
 - **Examples:**
   ```bash
   python MineGraph.py --data_dir ./input_fasta/ --output_dir ./results/ --metadata metadata.csv --threads 32 --tree_pars 20 --tree_bs 50 --quantile 75 --top_n 500
-   
+  python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --mode construct-graph
+  python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --mode extract-tr
+  python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --only-stats
   ```
 
 The final output will be organized in the following folders:
