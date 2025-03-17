@@ -118,6 +118,17 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
 
         subprocess.run(stats_command, check=True)
 
+        if sq_view:
+            stp_command = [
+                "docker", "run", "-it", "--rm",
+                "-v", f"{os.path.abspath(output_dir)}/MineGraph_output/:/data",
+                "-p", "3210:3000",
+                "rakanhaib/sequencetubemap:latest",
+                "bash", "-c",
+                "./scripts/prepare_vg.sh /data/gfa_to_vg.vg && npm start serve"
+            ]
+            subprocess.run(stp_command, check=True)
+
         print("[INFO] Statistical analysis complete.")
 
     except KeyboardInterrupt:
