@@ -101,8 +101,8 @@ see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
   ```
 
 The final output will be organized in the following folders:
-- `/path/to/your/data/MineGraph_output`: Contains the pipeline’s final output files.
-- `/path/to/your/data/pggb_output`: Includes the GFA file, VCF file, and an ODGI drawing of the final graph.
+- `/path/to/your/output/MineGraph_output`: Contains the pipeline’s final output files.
+- `/path/to/your/output/pggb_output`: Includes the GFA file, VCF file, and an ODGI drawing of the final graph.
 
 ---
 
