@@ -84,9 +84,9 @@ see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 | `--window_size`| No       | 1000      | The sliding window size for similarity plot.                                                         |
 | `--view`       | No       | False     | Runs SequenceTubeMap pipeline for visualizing the output graph.                                      |
 | `--mode`       | No       | `all`     | Specifies which steps of the workflow to run. Options: `all` (full workflow), `extract-tr` (only extract tandem repeats), `construct-graph` (build the graph but skip statistics). |
-| `--phyl-tree`  | No       | False     | Enables multiple sequence alignment (MSA) and phylogenetic tree generation.                         |
-| `--plots`      | No       | False     | Enables plotting of statistical graphs during analysis.                                              |
-| `--only-stats` | No       | True      | Runs only the statistical analysis step, generating XLSX files while skipping MSA, tree, and plots.  |
+| `--phyl-tree`  | No       | True      | Enables multiple sequence alignment (MSA) and phylogenetic tree generation.                         |
+| `--plots`      | No       | True      | Enables plotting of statistical graphs during analysis.                                              |
+| `--only-stats` | No       | False     | Runs only the statistical analysis step, generating XLSX files while skipping MSA, tree, and plots.  |
 
 ---
 
