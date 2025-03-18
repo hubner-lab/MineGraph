@@ -60,6 +60,12 @@ Zea_Mays.fasta
 Place the FASTA files in a folder (e.g., `./my_data/`) in the current directory, then provide the folder as an argument when running MineGraph.
 
 ### Usage
+example 1 : running the following command will run MineGraph pipeline and output all the definded workflows e.g pggb graph, phylogenetic tree, all the statistcs and plots. 
+
+```bash
+python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadata <csv_file>
+```
+example 1 : running the following command will run MineGraph pipeline and output all the definded workflows e.g pggb graph, phylogenetic tree, all the statistcs and plots. 
 
 ```bash
 python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadata <csv_file>
