@@ -37,6 +37,7 @@ MineGraph is operated within a Docker contained environment, thus eliminating co
    - **Multiple Sequence Alignment (MSA)**: Alignment file reflecting the consensus across input sequences.
    - **Phylogenetic Tree**: A tree showing evolutionary relationships based on the pangenome graph.
    - **GFA Conversion**: Conversion of GFA format into FASTA and VG for compatibility with additional tools.
+   - **SequenceTubeMap Integration:** Enables compact graph visualization, showing polymorphisms and homology via SequenceTubeMap built-in GUI.
 
 4. **Docker Integration**  
    MineGraph is designed to run in a Docker container, simplifying setup by eliminating software dependency issues. It’s compatible with most systems, making it accessible to users without requiring extensive technical expertise.
@@ -60,16 +61,32 @@ Zea_Mays.fasta
 Place the FASTA files in a folder (e.g., `./my_data/`) in the current directory, then provide the folder as an argument when running MineGraph.
 
 ### Usage
-example 1 : running the following command will run MineGraph pipeline and output all the definded workflows e.g pggb graph, phylogenetic tree, all the statistcs and plots. 
+**example 1 :** running the following command will run MineGraph pipeline and output all the definded workflows e.g pggb graph, phylogenetic tree, all the statistcs and plots. 
 
 ```bash
 python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadata <csv_file>
 ```
-example 1 : running the following command will run MineGraph pipeline and output all the definded workflows e.g pggb graph, phylogenetic tree, all the statistcs and plots. 
+**example 2 :** running the following command will run MineGraph pipeline and only outputs the TRs analysis results (optimized segment lenght parameter)
+a params.yaml will be saved to the output dir with the input data prepared, hence named according PanSN-spec convention.
 
 ```bash
-python MineGraph.py --data_dir <fasta_files_dir> --output_dir <out/dir>--metadata <csv_file>
+python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --mode extract-t
 ```
+
+**example 3 :** running the following command will run MineGraph pipeline and only outputs PGGB graph after passing the optimized parameters + TRs output
+a params.yaml will be saved to the output dir with the input data prepared and hence named according PanSN-spec convention.
+
+```bash
+python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --mode construct-graph
+```
+
+**example 4 :** running the following command will run MineGraph pipeline up to constructing the graph but plotting only the statistcal Datasheets (xlsx) of the graph.
+
+```bash
+python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --only-stats
+```
+
+
 if --view parameter is passed you should be able to access SequenceTubeMap api using http://localhost:3210/
 the graph should be present on a custom track named "gfa_to_vg.vg.xg"
 ![](https://github.com/hubner-lab/MineGraph/blob/main/examples/stm.gif)
@@ -100,7 +117,7 @@ see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 
 - **Examples:**
   ```bash
-  python MineGraph.py --data_dir ./input_fasta/ --output_dir ./results/ --metadata metadata.csv --threads 32 --tree_pars 20 --tree_bs 50 --quantile 75 --top_n 500
+  python MineGraph.py --data_dir ./input_fasta/ --output_dir ./results/ --metadata metadata.csv --threads 32 --tree_pars 20 --tree_bs 20 --quantile 75 --top_n 500 --view
   python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --mode construct-graph
   python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --mode extract-tr
   python MineGraph.py --data_dir input_fasta/ --output_dir results/ --metadata metadata.xlsx --only-stats
