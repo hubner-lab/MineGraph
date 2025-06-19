@@ -3,7 +3,11 @@ import sys
 import pandas as pd
 import subprocess
 import argparse
-
+import time
+import resource
+import platform
+import os
+import glob
 
 def print_help():
     print(r"""
@@ -23,8 +27,16 @@ def print_help():
 
 
 def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, tree_bs=10, quantile=0.25, top_n=50,
-                 sq_view=False, w_size=1000, mode="all", phyl_tree=True, plots=False, only_stats=False):
+                 sq_view=False, w_size=1000, mode="all", phyl_tree=True, plots=True, only_stats=False):
     try:
+        machine = platform.machine()
+        if machine == "x86_64":
+            docker_platform = "linux/amd64"
+        elif machine in ["arm64", "aarch64"]:
+            docker_platform = "linux/arm64"
+        else:
+            docker_platform = None
+
         if not os.path.exists(metadata_file):
             print(f"[ERROR] Metadata file {metadata_file} not found.")
             sys.exit(1)
@@ -45,14 +57,13 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
         if not fasta_files:
             print("[ERROR] No FASTA files found in the data directory.")
             sys.exit(1)
-
         # Step 1: Prepare FASTA input
         if mode in ["all", "extract-tr", "construct-graph"]:
             print("[STEP 1] Preparing FASTA input...")
             prepare_command = [
-                                  "docker", "run", "--rm", "-v", f"{os.path.abspath(data_dir)}:/data",
+                                  "docker", "run", "--rm","--platform", f"{docker_platform}", "-v", f"{os.path.abspath(data_dir)}:/data",
                                   "-v", f"{os.path.abspath(output_dir)}:/output",
-                                  "rakanhaib/opggb", "python", "/prepare_and_mash_input.py", "/data"
+                                  "rakanhaib/opggb", "python", "/src/prepare_and_mash_input.py", "/data"
                               ] + fasta_files
             subprocess.run(prepare_command, check=True)
 
@@ -60,9 +71,9 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
         if mode in ["all", "extract-tr", "construct-graph"]:
             print("[STEP 2] Running RepeatMasker...")
             repeatmask_command = [
-                "docker", "run", "--rm", "-v", f"{os.path.abspath(output_dir)}:/data",
+                "docker", "run", "--rm","--platform", f"{docker_platform}", "-v", f"{os.path.abspath(output_dir)}:/data",
                 "pegi3s/repeat_masker", "bash", "-c",
-                f"RepeatMasker /data/downsampled_panSN_output.fasta -pa {threads} -no_is -s"
+                f"RepeatMasker /data/downsampled_panSN_output.fasta -no_is -pa {threads} -s -gff"
             ]
             subprocess.run(repeatmask_command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -70,8 +81,8 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
         if mode in ["all", "extract-tr", "construct-graph"]:
             print("[STEP 3] Extracting longest TR and updating parameters...")
             extract_command = [
-                "docker", "run", "--rm", "-v", f"{os.path.abspath(output_dir)}:/data",
-                "rakanhaib/opggb", "python", "/run_repeatmask.py"
+                "docker", "run", "--rm","--platform", f"{docker_platform}", "-v", f"{os.path.abspath(output_dir)}:/data",
+                "rakanhaib/opggb", "python", "/src/run_repeatmask.py"
             ]
             subprocess.run(extract_command, check=True)
 
@@ -82,8 +93,8 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
         # Step 4: Run PGGB
         print(f"[STEP 4] Running PGGB with {threads} threads...")
         pggb_command = [
-            "docker", "run", "--rm", "-v", f"{os.path.abspath(output_dir)}:/output",
-            "rakanhaib/opggb", "python", "/run_pggb.py", str(threads)
+            "docker", "run", "--rm","--platform", f"{docker_platform}", "-v", f"{os.path.abspath(output_dir)}:/output",
+            "rakanhaib/opggb", "python", "/src/run_pggb.py", str(threads)
         ]
         subprocess.run(pggb_command, check=True)
 
@@ -94,10 +105,10 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
         # Step 5: Run Graph Statistics Analysis
         print("[STEP 5] Performing graph statistical analysis...")
         stats_command = [
-            "docker", "run", "--rm",
+            "docker", "run", "--rm","--platform", f"{docker_platform}",
             "-v", f"{os.path.abspath(output_dir)}:/data",
             "rakanhaib/opggb",
-            "python", "/run_stats.py",
+            "python", "/src/run_stats.py",
             "--threads", str(threads),
             "--tree_pars", str(tree_pars),
             "--tree_bs", str(tree_bs),
@@ -120,7 +131,7 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
 
         if sq_view:
             stp_command = [
-                "docker", "run", "-it", "--rm",
+                "docker", "run","--platform", f"{docker_platform}", "-it", "--rm",
                 "-v", f"{os.path.abspath(output_dir)}/MineGraph_output/:/data",
                 "-p", "3210:3000",
                 "rakanhaib/sequencetubemap:latest",
@@ -128,15 +139,53 @@ def run_workflow(data_dir, output_dir, metadata_file, threads=16, tree_pars=10, 
                 "./scripts/prepare_vg.sh /data/gfa_to_vg.vg && npm start serve"
             ]
             subprocess.run(stp_command, check=True)
-
         print("[INFO] Statistical analysis complete.")
-
+        end_time = time.time()
+        usage_end = resource.getrusage(resource.RUSAGE_CHILDREN)
+        elapsed_time = end_time - start_time
+        max_memory_usage_mb = 0
+        print("\n===== PIPELINE RESOURCE USAGE =====")
+        print(f"Elapsed wall clock time: {elapsed_time:.2f} seconds")
+        # Define the log directory path
+        log_dir = os.path.join(os.path.abspath(os.path.expanduser(args.output_dir)), "pggb_output")
+        log_files = glob.glob(os.path.join(log_dir, "*.log"))
+        total_cpu = 0.0
+        rax_log_files = glob.glob(os.path.join(log_dir, "*.log"))
+        try:
+            with open(log_files[0], 'r') as f:
+                for line in f:
+                    if "max memory" in line:
+                        # Extract the time value (7th column), remove 's' and convert to float
+                        parts = line.split()
+                        if len(parts) >= 7:
+                            time_str = parts[6].replace('s', '')
+                            mem_str = parts[8].replace('Kb', '')
+                            try:
+                                total_cpu += float(time_str)
+                                if int(mem_str) > max_memory_usage_mb:
+                                    max_memory_usage_mb = int(mem_str)
+                            except ValueError:
+                                print(f"Could not convert time value in {log_file}: {parts[6]}")
+            if phyl_tree:
+                rax_log_dir = os.path.join(os.path.abspath(os.path.expanduser(args.output_dir)), 'graph.raxml.log')
+                with open(rax_log_dir, 'r') as rf:
+                    try:
+                        rf_lines = rf.readlines()
+                        total_cpu += float(rf_lines[-2].split()[2])
+                    except ValueError:
+                        print(f"Could not convert mem value in {rax_log_files}")
+        except IOError as e:
+            print(f"Error reading {log_file}: {e}")
+        print(f"Total CPU time (seconds): {total_cpu:.2f}")
+        print(f"Max memory usage: {max_memory_usage_mb/1024:.2f} MB")
+        print("====================================\n")
     except KeyboardInterrupt:
         print("\nProcess interrupted by user. Exiting...")
         sys.exit(-1)
     except subprocess.CalledProcessError as e:
         print(f"Command failed with return code {e.returncode}: {e}")
         sys.exit(e.returncode)
+
 
 
 if __name__ == "__main__":
@@ -156,9 +205,11 @@ if __name__ == "__main__":
                         help="Select which steps to run.")
     parser.add_argument("--phyl-tree", action="store_true", help="Generate an MSA and a phylogenetic tree.")
     parser.add_argument("--plots", action="store_true", help="Generate all statistical plots.")
-    parser.add_argument("--only-stats", action="store_true", help="Generate only the statistical files (xlsx).")
+    parser.add_argument("--only-stats", action="store_false", help="Generate only the statistical files (xlsx).")
 
     args = parser.parse_args()
+    start_time = time.time()
+    usage_start = resource.getrusage(resource.RUSAGE_CHILDREN)
 
     run_workflow(
         data_dir=args.data_dir,
@@ -176,3 +227,4 @@ if __name__ == "__main__":
         plots=args.plots,
         only_stats=args.only_stats
     )
+
