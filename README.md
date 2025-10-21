@@ -110,6 +110,10 @@ see : https://github.com/vgteam/sequenceTubeMap/blob/master/public/help/help.md
 | `--phyl-tree`  | No       | True      | Enables multiple sequence alignment (MSA) and phylogenetic tree generation.                         |
 | `--plots`      | No       | True      | Enables plotting of statistical graphs during analysis.                                              |
 | `--only-stats` | No       | False     | Runs only the statistical analysis step, generating XLSX files while skipping MSA, tree, and plots.  |
+| `--tree_type`    | No       | `graph`   | Selects which phylogenetic tree to generate when `--phyl-tree` is enabled. Options: `graph` (from ODGI matrix) or `msa` (from RAxML-based MSA). |
+| `--sc_th`        | No       | 90        | Soft-core threshold percentage for node classification (e.g., 90 means nodes present in ≥90% of paths are soft-core). |
+
+---
 
 ---
 
