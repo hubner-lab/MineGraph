@@ -1,0 +1,95 @@
+# Use Miniconda base image
+FROM continuumio/miniconda3:24.11.1-0
+
+# Set working directory
+WORKDIR /
+
+# Install system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    libz-dev \
+    git \
+    wget \
+    curl \
+    samtools \
+    libbz2-dev \
+    zlib1g-dev \
+    liblzma-dev \
+    libgl1-mesa-glx \
+    libxrender1 \
+    libxext6 \
+    libx11-6 \
+    libcairo2-dev \
+    libjpeg-dev \
+    libgif-dev \
+    pkg-config \
+    python3-pip \
+    seqtk \
+    libreadline-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variable to silence warnings
+ENV XDG_RUNTIME_DIR=/tmp/runtime-root
+RUN mkdir -p /tmp/runtime-root && chmod 0700 /tmp/runtime-root
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Build fastix
+RUN cargo install fastix
+
+# Clone and build gretl
+RUN git clone https://github.com/MoinSebi/gretl.git && \
+    cd gretl && \
+    cargo build --release && \
+    cp target/release/gretl /usr/local/bin/ && \
+    cd .. && rm -rf gretl
+
+# Enable libmamba solver for better conda behavior
+RUN conda install -y -n base conda-libmamba-solver && \
+    conda config --set solver libmamba
+
+# Install bioinformatics tools and Python libraries using conda
+RUN conda config --add channels conda-forge && \
+    conda config --add channels bioconda && \
+    conda install -y python=3.11 && \
+    conda install -y \
+    pggb=0.7.2 \
+    vg \
+    mash \
+    raxml-ng \
+    numpy \
+    pandas \
+    biopython \
+    matplotlib \
+    networkx \
+    seaborn \
+    pysam \
+    ete3
+
+# Install additional Python packages with pip
+RUN pip install \
+    scikit-learn \
+    scipy \
+    python-igraph \
+    pafpy \
+    pycirclize \
+    openpyxl \
+    pycairo \
+    PyQt5 \
+    pyvis \
+    cyvcf2
+
+# Copy your source code
+RUN mkdir /src
+COPY src/ /src
+WORKDIR /src
+
+# Clean up to reduce image size
+RUN conda clean --all --yes && \
+    rm -rf ~/.cache/pip /tmp/* /var/tmp/*
+
+# Default to bash shell
+CMD ["/bin/bash"]
