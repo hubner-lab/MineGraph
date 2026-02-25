@@ -189,8 +189,6 @@ This tutorial demonstrates:
 - Inspecting nodes and paths
 - Exploring structural variation
 
-Ensure the GIF file exists inside the `examples/` directory.
-
 ---
 
 # 📂 Output Structure
