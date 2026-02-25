@@ -138,7 +138,7 @@ The container is automatically stopped and removed when exiting or pressing `Ctr
 # 🎬 SequenceTubeMap Tutorial
 
 <p align="center">
-  <img src="examples/sequencetubemap_tutorial.gif" alt="SequenceTubeMap tutorial" width="900">
+  <img src="examples/stm.gif" alt="SequenceTubeMap tutorial" width="900">
 </p>
 
 This tutorial demonstrates:
