@@ -49,7 +49,7 @@ tubemap     → interactive visualization
 python MineGraph.py construct --   --data_dir <fasta_files_dir>   --output_dir <out_dir>   --metadata <csv_or_xlsx>
 ```
 
-This runs the full PGGB pipeline inside the `opggb` Docker container.
+This runs the full PGGB pipeline inside the `MineGraph` Docker container.
 
 ---
 
