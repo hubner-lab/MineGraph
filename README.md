@@ -93,25 +93,6 @@ Because the construction step is implemented in `/src/construct.py` inside the c
 python MineGraph.py construct -- --help
 ```
 
-## Commonly used construction parameters
-
-These are the parameters most commonly used in MineGraph runs (in addition to the required ones above):
-
-- `--threads <int>`: number of CPU threads to use.
-- `--quantile <int>`: quantile used during automatic parameter optimization (e.g., divergence/identity estimation).
-- `--docker_platform <linux/amd64|linux/arm64>` (if supported in your build): forces the container platform when needed.
-- `--skip_repeatmasker` / `--repeatmasker_species <name>` (if enabled in your construct.py): control repeat-based segment-length estimation.
-- `--keep_intermediate`: keep intermediate files (useful for debugging).
-
-### Example
-
-```bash
-python MineGraph.py construct --   --data_dir ./mito_Data   --output_dir ./MineGraph_output   --metadata ./mito_meta.csv   --threads 120   --quantile 85
-```
-
-This runs the full PGGB pipeline inside the MineGraph Docker environment.
-
----
 
 # 2️⃣ Extract Subgraphs & Inspect Graphs
 
