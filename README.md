@@ -118,7 +118,7 @@ Use `--mkdir` to auto-create missing output directories.
 python MineGraph.py extract -- stats  -i graph.gfa -o stats.txt
 ```
 - `-i` input GFA
-- `-o` output stats fiile
+- `-o` output stats file
 
 Produces node/edge/path statistics for the graph.
 
@@ -130,7 +130,7 @@ Produces node/edge/path statistics for the graph.
 python MineGraph.py extract -- paths -i graph.gfa -o paths.txt
 ```
 - `-i` input GFA
-- `-o` output paths fiile
+- `-o` output paths file
 
 Lists paths contained in the GFA graph.
 
