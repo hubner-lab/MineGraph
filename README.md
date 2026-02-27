@@ -117,6 +117,8 @@ Use `--mkdir` to auto-create missing output directories.
 ```bash
 python MineGraph.py extract -- stats  -i graph.gfa -o stats.txt
 ```
+- `-i` input GFA
+- `-o` output stats fiile
 
 Produces node/edge/path statistics for the graph.
 
@@ -127,6 +129,8 @@ Produces node/edge/path statistics for the graph.
 ```bash
 python MineGraph.py extract -- paths -i graph.gfa -o paths.txt
 ```
+- `-i` input GFA
+- `-o` output paths fiile
 
 Lists paths contained in the GFA graph.
 
@@ -227,14 +231,14 @@ pggb_output/
 -m host:container  → add extra Docker mounts
 ```
 ## Citation
-Erik Garrison*, Andrea Guarracino*, Simon Heumos, Flavia Villani, Zhigui Bao, Lorenzo Tattini, Jörg Hagmann, Sebastian Vorbrugg, Santiago Marco-Sola, Christian Kubica, David G. Ashbrook, Kaisa Thorell, Rachel L. Rusholme-Pilcher, Gianni Liti, Emilio Rudbeck, Sven Nahnsen, Zuyu Yang, Mwaniki N. Moses, Franklin L. Nobrega, Yi Wu, Hao Chen, Joep de Ligt, Peter H. Sudmant, Nicole Soranzo, Vincenza Colonna, Robert W. Williams, Pjotr Prins. Building pangenome graphs. Nature Methods (2024). https://doi.org/10.1038/s41592-024-02430-3
+>Erik Garrison*, Andrea Guarracino*, Simon Heumos, Flavia Villani, Zhigui Bao, Lorenzo Tattini, Jörg Hagmann, Sebastian Vorbrugg, Santiago Marco-Sola, Christian Kubica, David G. Ashbrook, Kaisa Thorell, Rachel L. Rusholme-Pilcher, Gianni Liti, Emilio Rudbeck, Sven Nahnsen, Zuyu Yang, Mwaniki N. Moses, Franklin L. Nobrega, Yi Wu, Hao Chen, Joep de Ligt, Peter H. Sudmant, Nicole Soranzo, Vincenza Colonna, Robert W. Williams, Pjotr Prins. Building pangenome graphs. Nature Methods (2024). https://doi.org/10.1038/s41592-024-02430-3
 
-Beyer, W., Novak, A. M., Hickey, G., Chan, J., Marschall, T., & Paten, B. (2019).
+>Beyer, W., Novak, A. M., Hickey, G., Chan, J., Marschall, T., & Paten, B. (2019).
 SequenceTubeMap: visualization for graph-based genomes.
 Bioinformatics, 35(23), 4791–4793.
 https://doi.org/10.1093/bioinformatics/btz597
 
-Gretl - Variation GRaph Evaluation TooLkit
+>Gretl - Variation GRaph Evaluation TooLkit
 Sebastian Vorbrugg, Ilja Bezrukov, Zhigui Bao, Detlef Weigel
 doi: https://doi.org/10.1101/2024.03.04.580974
 
