@@ -180,7 +180,7 @@ Add `--mkdir` to any convert command to auto-create missing output directories.
 
 ---
 
-### 4 · `tubemap` — Interactive Visualisation
+### 4 · `SequenceTubeMap` — Interactive Visualisation
 
 ```bash
 python MineGraph.py tubemap -i graph.gfa
@@ -202,7 +202,7 @@ Then open **http://localhost:3210** in your browser. The container is automatica
 | `--mkdir` | Auto-create missing host-side output directories |
 | `-m host:container` | Add extra Docker volume mounts (repeatable) |
 | `--image IMAGE` | Override the opggb Docker image (default: `rakanhaib/opggb:latest`) |
-| `--tubemap-image IMAGE` | Override the TubeMap image (default: `rakanhaib/sequencetubemap:latest`) |
+| `--tubemap-image IMAGE` | Override the SequenceTubeMap image (default: `rakanhaib/sequencetubemap:latest`) |
 
 ---
 
