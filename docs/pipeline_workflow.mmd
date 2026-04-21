@@ -1,0 +1,99 @@
+flowchart LR
+    %% ─────────────── Inputs ───────────────
+    FASTA[("📁 FASTA files<br/><i>data_dir</i>")]:::input
+    META[("📄 metadata.csv")]:::input
+    BED[("📄 genes.bed")]:::input
+    REPS[("📄 representatives.txt")]:::input
+    GFA_IN[("🧬 existing .gfa")]:::input
+
+    %% ─────────────── Host dispatcher ───────────────
+    HOST{{"🐍 MineGraph.py<br/>host dispatcher"}}:::host
+
+    %% ─────────────── Construct pipeline ───────────────
+    subgraph CONSTRUCT["construct — build a pangenome graph"]
+      direction LR
+      S1["① prepare_and_mash_input<br/>🐳 rakanhaib/opggb"]:::docker
+      S2["② RepeatMasker<br/>🐳 pegi3s/repeat_masker"]:::docker
+      S3["③ run_repeatmask<br/>🐳 rakanhaib/opggb"]:::docker
+      S4["④ run_pggb / pggb<br/>🐳 rakanhaib/opggb"]:::docker
+      S5{{"⑤ run_stats<br/>4 sub-steps in parallel"}}:::fanout
+      S5A["5a · Core stats XLSX"]:::docker
+      S5B["5b · Statistical plots"]:::docker
+      S5C["5c · Consensus + ODGI PAV"]:::docker
+      S5D["5d · Phylogenetic tree<br/>UPGMA · Felsenstein / UFBoot-PAV<br/>or RAxML-NG"]:::docker
+      S1 --> S2 --> S3 --> S4 --> S5
+      S5 --> S5A
+      S5 --> S5B
+      S5 --> S5C --> S5D
+    end
+
+    %% ─────────────── Stand-alone tools ───────────────
+    subgraph TOOLS["stand-alone commands"]
+      direction TB
+      EXTRACT["✂️ extract<br/>subgraph / stats / paths"]:::tool
+      INJECT["💉 inject<br/>gene annotation + gggenes<br/>🐳 rakanhaib/opggb"]:::tool
+      CONVERT["🔁 convert<br/>GFA → FASTA / VG"]:::tool
+      TUBEMAP["🔍 tubemap<br/>🐳 rakanhaib/sequencetubemap"]:::tool
+    end
+
+    %% ─────────────── Outputs ───────────────
+    O_GFA[("🧬 graph.smooth.final.gfa")]:::output
+    O_OG[("🧬 graph.og")]:::output
+    O_VCF[("📄 graph.vcf")]:::output
+    O_XLSX[("📊 graph_stats.xlsx")]:::output
+    O_PLOTS[("🖼 plots/")]:::output
+    O_PAV[("🧮 odgi_matrix.tsv")]:::output
+    O_TREE[("🌳 graph_phylo_tree.nwk + .png")]:::output
+    O_MULTIQC[("📈 multiqc_report.html")]:::output
+
+    O_SUB[("🧬 subgraph.gfa")]:::output
+    O_ARROWS[("🖼 gene_arrows.png")]:::output
+    O_BIN[("🖼 bin_coverage.png")]:::output
+    O_FASTA[("🧬 graph.fasta")]:::output
+    O_VG[("🧬 graph.vg")]:::output
+    BROWSER[["🌐 http://localhost:3210"]]:::viewer
+
+    %% ─────────────── Wiring ───────────────
+    FASTA --> HOST
+    META  --> HOST
+    HOST  --> S1
+
+    S4 --> O_GFA
+    S4 --> O_OG
+    S4 --> O_VCF
+    S4 --> O_MULTIQC
+    S5A --> O_XLSX
+    S5B --> O_PLOTS
+    S5C --> O_PAV
+    S5D --> O_TREE
+
+    O_GFA -.-> EXTRACT
+    GFA_IN -.-> EXTRACT
+    EXTRACT --> O_SUB
+
+    O_OG -.-> INJECT
+    BED   --> INJECT
+    REPS  --> INJECT
+    INJECT --> O_ARROWS
+    INJECT --> O_BIN
+
+    O_GFA -.-> CONVERT
+    CONVERT --> O_FASTA
+    CONVERT --> O_VG
+
+    O_GFA -.-> TUBEMAP
+    O_SUB -.-> TUBEMAP
+    TUBEMAP --> BROWSER
+
+    %% ─────────────── n8n-style palette ───────────────
+    classDef input   fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0c4a6e,rx:10,ry:10
+    classDef output  fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#78350f,rx:10,ry:10
+    classDef docker  fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#3b0764,rx:12,ry:12
+    classDef host    fill:#fce7f3,stroke:#db2777,stroke-width:3px,color:#500724
+    classDef fanout  fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
+    classDef tool    fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d,rx:12,ry:12
+    classDef viewer  fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d,rx:10,ry:10
+
+    %% Sub-graph framing
+    style CONSTRUCT fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,stroke-dasharray:4 3
+    style TOOLS     fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,stroke-dasharray:4 3

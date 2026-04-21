@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# R
+.Rhistory
+.RData
+.Ruserdata
+
+# macOS
+.DS_Store
+
+# Editors
+.idea/
+.vscode/
+
+# MineGraph runtime outputs (do not commit generated graphs)
+/out/
+/output/
+pggb_output/
+MineGraph_output/
+panSN_output.fasta.gz
+downsampled_panSN_output.fasta
+benchmark_report.json
+
+# Ad-hoc
+*.log
+*.tmp

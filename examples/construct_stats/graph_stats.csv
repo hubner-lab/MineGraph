@@ -1,0 +1,10 @@
+Statistic,Value,Explanation
+Total number of nodes,243291,Total number of sequence nodes in the variation graph.
+Cloud nodes (≤ 5%),127385,Nodes present in ≤ 5% of haplotypes (private/rare regions).
+Shell nodes (5%–95%),112503,Nodes present in > 5% and < 95% of haplotypes (variable regions).
+Core nodes (≥ 95%),3403,Nodes present in ≥ 95% of haplotypes (highly conserved core).
+Total number of edges,379936,Total number of graph edges connecting nodes.
+Average node degree,1.56,Average number of connections per node.
+Graph density,0.012837786236,Proportion of observed vs. possible connections.
+Number of haplotypes (paths),192,Number of haplotype paths represented in the graph.
+Average nucleotide diversity (π),0.0226179019754446,Genome-wide average nucleotide diversity across paths.
