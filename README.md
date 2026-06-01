@@ -600,7 +600,7 @@ If you use MineGraph in your research, please cite:
 
 </details>
 
-The source code archived at the time of publication is deposited at Zenodo (DOI: 10.5281/zenodo.XXXXXXX — to be updated upon journal acceptance).
+The source code archived at the time of publication is deposited at Zenodo (DOI: 10.5281/zenodo.20475106 — to be updated upon journal acceptance).
 
 ---
 
