@@ -184,7 +184,7 @@ All options after `--` are forwarded to the pipeline steps inside the container.
 |-----------|---------|-------------|
 | `--threads INT` | `16` | CPU threads passed to all steps |
 | `--mode` | `all` | `all` · `extract-tr` · `construct-graph` (see below) |
-| `--species STR` | `viridiplantae` | RepeatMasker `-species` clade. Use narrower clades for better sensitivity: `embryophyta`, `magnoliophyta`, `monocotyledons`, `poaceae` |
+| `--species STR` | `None` | RepeatMasker `-species` clade. Use narrower clades for better sensitivity: `embryophyta`, `magnoliophyta`, `monocotyledons`, `poaceae`,  `None for auto`|
 | `--resume` | off | Resume from last completed step (see **Resume** section) |
 | `--convert-gfa` | off | Convert final GFA to VG + FASTA after statistics |
 | `--sq_view` | off | Launch SequenceTubeMap viewer after construction |
